@@ -1,0 +1,6 @@
+[run]
+omit =
+    searchtube/__main__.py
+    venv/*
+    tests/*
+    setup.py
