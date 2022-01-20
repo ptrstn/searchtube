@@ -1,11 +1,12 @@
 import argparse
 
 from searchtube import __version__
+from searchtube.core import YoutubeSearchSession
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description="Replace this text with your description"
+        description="YouTube search client"
     )
 
     parser.add_argument(
@@ -16,7 +17,9 @@ def parse_arguments():
 
 
 def main():
-    print("Hello there.")
+    search_session = YoutubeSearchSession()
+    search_session.search("Adam and Eve")
+    search_session.print_items()
 
 
 if __name__ == "__main__":

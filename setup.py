@@ -26,8 +26,8 @@ setup(
     url="http://github.com/ptrstn/searchtube",
     author="Peter Stein",
     license="MIT",
-    python_requires='>3.6',
+    python_requires=">3.6",
     packages=["searchtube"],
-    install_requires=[],
+    install_requires=["requests"],
     entry_points={"console_scripts": ["searchtube=searchtube.__main__:main"]},
 )
