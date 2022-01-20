@@ -96,13 +96,6 @@ class YoutubeSearchSession:
         self.videos = self.videos[:limit]
         return self.videos
 
-    def print_items(self):
-        for idx, item in enumerate(self.items):
-            if "videoRenderer" in item:
-                video_id = item["videoRenderer"]["videoId"]
-                title = item["videoRenderer"]["title"]["runs"][0]["text"]
-                print(f"{idx} {video_id} {title}")
-
 
 def suggest_search(search_text):
     url = f"{SUGGEST_BASE_URL}{SUGGEST_PATH}{SUGGEST_PARAMETERS}&q={search_text}"
