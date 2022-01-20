@@ -7,6 +7,7 @@ from searchtube.extractors import (
     extract_items,
     extract_continuation_token,
     extract_continuation_contents,
+    extract_videos,
 )
 from searchtube.settings import (
     SUGGEST_BASE_URL,
@@ -22,6 +23,7 @@ class YoutubeSearchSession:
     def __init__(self):
         self.session = requests.session()
         self.items = []
+        self.videos = []
 
     @staticmethod
     def _create_initial_search_data(query: str) -> str:
@@ -55,25 +57,33 @@ class YoutubeSearchSession:
         return response.json()
 
     def _initialize_search(self, query) -> str:
+        print(f"Initializing search for query '{query}'...")
         data = self._create_initial_search_data(query)
         search_result = self._perform_search(data)
 
         contents = extract_contents(search_result)
         items = extract_items(contents)
         continuation_token = extract_continuation_token(contents)
+        videos = extract_videos(items)
 
         self.items.extend(items)
+        self.videos.extend(videos)
+
         return continuation_token
 
     def _continue_search(self, continuation_token) -> str:
+        print(f"Continuing search with token {continuation_token[:50]}...")
         data = self._create_continuation_search_data(continuation_token)
         search_result = self._perform_search(data)
 
         contents = extract_continuation_contents(search_result)
         items = extract_items(contents)
         next_continuation_token = extract_continuation_token(contents)
+        videos = extract_videos(items)
 
         self.items.extend(items)
+        self.videos.extend(videos)
+
         return next_continuation_token
 
     def search(self, query, limit=20):

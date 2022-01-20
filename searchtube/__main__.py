@@ -5,9 +5,7 @@ from searchtube.core import YoutubeSearchSession
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(
-        description="YouTube search client"
-    )
+    parser = argparse.ArgumentParser(description="YouTube search client")
 
     parser.add_argument(
         "--version", action="version", version="%(prog)s {}".format(__version__)
