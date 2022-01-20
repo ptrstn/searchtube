@@ -79,10 +79,12 @@ class YoutubeSearchSession:
     def search(self, query, limit=20):
         assert limit >= 0, "Limit can't be negative"
         continuation_token = self._initialize_search(query)
-        while len(self.items) < limit:
-            self._continue_search(continuation_token)
-        self.items = self.items[:limit]
-        return self.items
+
+        while len(self.videos) < limit:
+            continuation_token = self._continue_search(continuation_token)
+
+        self.videos = self.videos[:limit]
+        return self.videos
 
     def print_items(self):
         for idx, item in enumerate(self.items):
