@@ -8,6 +8,7 @@ from searchtube.extractors import (
     extract_continuation_token,
     extract_continuation_contents,
     extract_videos,
+    extract_search_suggestions,
 )
 from searchtube.settings import (
     SUGGEST_BASE_URL,
@@ -26,7 +27,12 @@ class YoutubeSearchSession:
         self.videos = []
 
     @staticmethod
-    def _create_initial_search_data(query: str) -> str:
+    def _create_base_search_data(hl=None) -> dict:
+        """
+        :param hl: BCP-47 code that uniquely identifies a human language
+        :return: Search data dictionary
+        """
+
         data = {
             "context": {
                 "client": {
@@ -34,34 +40,35 @@ class YoutubeSearchSession:
                     "clientVersion": SEARCH_CLIENT_VERSION,
                 },
             },
-            "query": query,
         }
-        return json.dumps(data)
+
+        if hl:
+            data["context"]["client"]["hl"] = hl
+
+        return data
 
     @staticmethod
-    def _create_continuation_search_data(continuation_token: str) -> str:
-        data = {
-            "context": {
-                "client": {
-                    "clientName": SEARCH_CLIENT_NAME,
-                    "clientVersion": SEARCH_CLIENT_VERSION,
-                },
-            },
-            "continuation": continuation_token,
-        }
+    def _create_initial_search_data(query: str, **kwargs) -> dict:
+        data = YoutubeSearchSession._create_base_search_data(**kwargs)
+        data["query"] = query
+        return data
 
-        return json.dumps(data)
+    @staticmethod
+    def _create_continuation_search_data(continuation_token: str, **kwargs) -> dict:
+        data = YoutubeSearchSession._create_base_search_data(**kwargs)
+        data["continuation"] = continuation_token
+        return data
 
-    def _perform_search(self, data: str):
-        response = self.session.post(url=SEARCH_URL, data=data)
+    def _perform_search(self, data: dict) -> dict:
+        response = self.session.post(url=SEARCH_URL, data=json.dumps(data))
         return response.json()
 
-    def _initialize_search(self, query) -> str:
+    def _initialize_search(self, query, **kwargs) -> str:
         print(f"Initializing search for query '{query}'...")
-        data = self._create_initial_search_data(query)
-        search_result = self._perform_search(data)
+        data = self._create_initial_search_data(query, **kwargs)
+        search_json_response = self._perform_search(data)
 
-        contents = extract_contents(search_result)
+        contents = extract_contents(search_json_response)
         items = extract_items(contents)
         continuation_token = extract_continuation_token(contents)
         videos = extract_videos(items)
@@ -71,12 +78,12 @@ class YoutubeSearchSession:
 
         return continuation_token
 
-    def _continue_search(self, continuation_token) -> str:
+    def _continue_search(self, continuation_token, **kwargs) -> str:
         print(f"Continuing search with token {continuation_token[:50]}...")
-        data = self._create_continuation_search_data(continuation_token)
-        search_result = self._perform_search(data)
+        data = self._create_continuation_search_data(continuation_token, **kwargs)
+        search_json_response = self._perform_search(data)
 
-        contents = extract_continuation_contents(search_result)
+        contents = extract_continuation_contents(search_json_response)
         items = extract_items(contents)
         next_continuation_token = extract_continuation_token(contents)
         videos = extract_videos(items)
@@ -86,12 +93,12 @@ class YoutubeSearchSession:
 
         return next_continuation_token
 
-    def search(self, query, limit=20):
-        assert limit >= 0, "Limit can't be negative"
-        continuation_token = self._initialize_search(query)
+    def search(self, query, limit: int = None, **kwargs):
+        assert not limit or limit >= 0, "Limit has to be >= 0"
+        continuation_token = self._initialize_search(query, **kwargs)
 
-        while len(self.videos) < limit:
-            continuation_token = self._continue_search(continuation_token)
+        while limit and len(self.videos) < limit:
+            continuation_token = self._continue_search(continuation_token, **kwargs)
 
         self.videos = self.videos[:limit]
         return self.videos
