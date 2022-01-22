@@ -4,73 +4,6 @@
 
 # searchtube
 
-My personal python starter template. Intended for copy and paste use. 
-
-This project is released into the public domain, so feel free to modify and use it as you wish.
-
-## Usage
-
-### Copy files into your new project
-
-Copy all files from this repository into your personal project. 
-
-```bash
-git clone https://github.com/ptrstn/searchtube.git tmp
-rm -rf tmp/.git
-cp -r tmp/.coveragerc tmp/.flake8 tmp/.gitignore tmp/* .
-cp -r tmp/.github .github
-rm -rf tmp
-```
-
-**Note**: If your project is not empty, it might overwrite your files.
-
-### Adjust package name
-
-Replace all occurrences of ```searchtube``` and ```searchtube``` with your package name.
-
-You can do this for instance by first declaring a variable ```NEW_PROJECT_NAME``` and replacing ```<YOUR_PACKAGE_NAME>``` with your desired package/project name.
-
-```bash
-NEW_PROJECT_NAME=<YOUR_PACKAGE_NAME>
-```
-
-You can then use this variable to rename all occurrences in the template with your desired package/project name.
-
-```bash
-mv searchtube $NEW_PROJECT_NAME
-sed -i "s/searchtube/$NEW_PROJECT_NAME/g" setup.py .coveragerc README.md "${NEW_PROJECT_NAME}/__main__.py" tests/test_core.py
-sed -i "s/searchtube/$NEW_PROJECT_NAME/g" README.md setup.py
-```
-
-### Adjust GitHub Username
-
-If your username is not ```ptrstn``` then you can first setup a new variable:
-
-```bash
-YOUR_GH_USERNAME=<YOUR_GITHUB_USERNAME>
-```
-
-Then you can replace it with the following command:
-
-```bash
-sed -i "s/ptrstn/$YOUR_GH_USERNAME/g" setup.py README.md
-```
-
-### Adjust license
-
-Replace the LICENSE file and change the ```license=Unlicense``` entry in ```setup.py``` to whatever you want to use. 
-I would suggest the MIT license.
-
-### Adjust author 
-
-Also replace the author name in ```setup.py``` with your name.
-
-### Adjust README.md
-
-Adapt README.md, especially the installation instructions, according to your project. 
-
-In particular, delete all the text up until **## Installation**
-
 ## Installation
 
 ```bash
@@ -79,8 +12,43 @@ pip install --user git+https://github.com/ptrstn/searchtube
 
 ## Usage
 
+### Help
+
 ```bash
-searchtube
+searchtube --help
+```
+
+```bash
+usage: searchtube [-h] [--version] [--language LANGUAGE] [--limit LIMIT] query
+
+YouTube search client
+
+positional arguments:
+  query                Search query
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --version            show program's version number and exit
+  --language LANGUAGE  BCP-47 code to set the response language
+  --limit LIMIT        Limit of the amount of videos in result
+```
+
+### Example
+
+```bash
+searchtube "Pontius Pilate" --limit 5 --language de
+```
+
+Output:
+
+```bash
+Initializing search for query 'Pontius Pilate'...
+      video_id                                              title published_time duration         view_count                                  author                        channel_url
+0  PLmMcLIzn4U  Who Was Pontius Pilate? | The Man Who Killed J...   vor 2 Jahren    47:05  1.667.489 Aufrufe  Timeline - World History Documentaries                 /c/TimelineChannel
+1  fppoqtIu2ug  Why Did Pontius Pilate Allow The Killing Of Ch...  vor 9 Monaten    49:10    678.848 Aufrufe  Timeline - World History Documentaries                 /c/TimelineChannel
+2  XyIwSiPIb9c  The Death of Pontius Pilate - Ancient Christia...     vor 1 Jahr     5:54      4.521 Aufrufe                       Theosis Christian  /channel/UCcCO7V2VRTjEfXv3VyifOgA
+3  pXGsio9H1xs  The Last Temptation of Christ (1988) - Pontius...   vor 2 Jahren     3:44    228.233 Aufrufe                              Movieclips                      /c/MOVIECLIPS
+4  n2UdpqsN2tw  Acta Pilate: Pilate's Report to Caesar of the ...   vor 7 Jahren    28:47    363.107 Aufrufe                          Lovin TheLight                   /c/LovinTheLight
 ```
 
 ## Development
@@ -97,5 +65,5 @@ pip install -r testing-requirements.txt
 ### Testing
 
 ```bash
-pytest
+pytest --cov
 ```
