@@ -23,13 +23,19 @@ def extract_continuation_token(contents: dict):
 def extract_video(item: dict):
     video_id = item["videoRenderer"]["videoId"]
     title = item["videoRenderer"]["title"]["runs"][0]["text"]
-    published_time = item["videoRenderer"]["publishedTimeText"]["simpleText"]
     duration = item["videoRenderer"]["lengthText"]["simpleText"]
     view_count = item["videoRenderer"]["viewCountText"]["simpleText"]
     author = item["videoRenderer"]["ownerText"]["runs"][0]["text"]
     channel_url = item["videoRenderer"]["ownerText"]["runs"][0]["navigationEndpoint"][
         "commandMetadata"
     ]["webCommandMetadata"]["url"]
+
+    try:
+        published_time = item["videoRenderer"]["publishedTimeText"]["simpleText"]
+    except KeyError:
+        # Some videos do not contain a published time
+        # Example: https://www.youtube.com/results?search_query=%22Jesus+Christ%21%22+%22Junior+NRB%22
+        published_time = None
 
     return {
         "video_id": video_id,
