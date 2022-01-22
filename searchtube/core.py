@@ -109,3 +109,8 @@ def suggest_search(query: str) -> list:
     response = requests.get(url)
     suggestions = extract_search_suggestions(response.text)
     return suggestions
+
+
+def search(query: str, **kwargs):
+    search_session = YoutubeSearchSession()
+    return search_session.search(query=query, **kwargs)
