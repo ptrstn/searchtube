@@ -104,7 +104,8 @@ class YoutubeSearchSession:
         return self.videos
 
 
-def suggest_search(search_text):
-    url = f"{SUGGEST_BASE_URL}{SUGGEST_PATH}{SUGGEST_PARAMETERS}&q={search_text}"
+def suggest_search(query: str) -> list:
+    url = f"{SUGGEST_BASE_URL}{SUGGEST_PATH}{SUGGEST_PARAMETERS}&q={query}"
     response = requests.get(url)
-    return response.text
+    suggestions = extract_search_suggestions(response.text)
+    return suggestions

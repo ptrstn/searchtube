@@ -50,3 +50,11 @@ def extract_video(item: dict):
 
 def extract_videos(items: list):
     return [extract_video(item) for item in items if "videoRenderer" in item]
+
+
+def extract_search_suggestions(response_text: str) -> list:
+    result_list = eval(
+        response_text[response_text.find("(") + 1 : response_text.find(")")]
+    )
+    suggestions = [item[0] for item in result_list[1]]
+    return suggestions
