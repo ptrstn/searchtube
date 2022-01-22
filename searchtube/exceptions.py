@@ -1,0 +1,2 @@
+class NoMoreResultsException(KeyError):
+    pass

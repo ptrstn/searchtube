@@ -2,6 +2,7 @@ import json
 
 import requests
 
+from searchtube.exceptions import NoMoreResultsException
 from searchtube.extractors import (
     extract_contents,
     extract_items,
@@ -85,6 +86,11 @@ class YoutubeSearchSession:
 
         contents = extract_continuation_contents(search_json_response)
         items = extract_items(contents)
+
+        if len(items) == 1 and "messageRenderer" in items[0]:
+            message = items[0]["messageRenderer"]["text"]["runs"][0]["text"]
+            raise NoMoreResultsException(message)
+
         next_continuation_token = extract_continuation_token(contents)
         videos = extract_videos(items)
 
@@ -98,7 +104,11 @@ class YoutubeSearchSession:
         continuation_token = self._initialize_search(query, **kwargs)
 
         while limit and len(self.videos) < limit:
-            continuation_token = self._continue_search(continuation_token, **kwargs)
+            try:
+                continuation_token = self._continue_search(continuation_token, **kwargs)
+            except NoMoreResultsException as e:
+                print(e)
+                break
 
         self.videos = self.videos[:limit]
         return self.videos

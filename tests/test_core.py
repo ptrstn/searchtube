@@ -1,4 +1,5 @@
 from searchtube.core import YoutubeSearchSession
+
 from searchtube import search, suggest_search
 
 
@@ -82,5 +83,5 @@ def test_suggest_search():
 
 
 def test_search_unique():
-    videos = search("hoawkz", hl="de")
-    assert len(videos) < 13
+    videos = search("baeda26", limit=30)
+    assert len(videos) < 20
