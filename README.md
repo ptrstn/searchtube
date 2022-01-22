@@ -1,5 +1,5 @@
 [![Python Package](https://github.com/ptrstn/searchtube/actions/workflows/python-package.yml/badge.svg)](https://github.com/ptrstn/searchtube/actions/workflows/python-package.yml)
-[![codecov](https://codecov.io/gh/ptrstn/searchtube/branch/master/graph/badge.svg)](https://codecov.io/gh/ptrstn/searchtube)
+[![codecov](https://codecov.io/gh/ptrstn/searchtube/branch/main/graph/badge.svg)](https://codecov.io/gh/ptrstn/searchtube)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # searchtube
