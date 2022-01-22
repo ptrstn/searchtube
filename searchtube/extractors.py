@@ -34,7 +34,7 @@ def extract_video(item: dict):
         published_time = item["videoRenderer"]["publishedTimeText"]["simpleText"]
     except KeyError:
         # Some videos do not contain a published time
-        # Example: https://www.youtube.com/results?search_query=%22Jesus+Christ%21%22+%22Junior+NRB%22
+        # Example query: "Jesus Christ" + "Junior NRB"
         published_time = None
 
     return {
