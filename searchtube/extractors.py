@@ -1,3 +1,6 @@
+import re
+
+
 def extract_contents(data: dict):
     return data["contents"]["twoColumnSearchResultsRenderer"]["primaryContents"][
         "sectionListRenderer"
@@ -53,8 +56,6 @@ def extract_videos(items: list):
 
 
 def extract_search_suggestions(response_text: str) -> list:
-    result_list = eval(
-        response_text[response_text.find("(") + 1 : response_text.find(")")]
-    )
-    suggestions = [item[0] for item in result_list[1]]
-    return suggestions
+    result = re.findall(r"\(.*?\)", response_text)
+    _, suggestions, _ = eval(result[0])
+    return [item[0] for item in suggestions]
