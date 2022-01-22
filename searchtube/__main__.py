@@ -15,10 +15,11 @@ def parse_arguments():
 
     parser.add_argument("query", help="Search query")
 
+    parser.add_argument("--language", help=" BCP-47 code to set the response language")
+
     parser.add_argument(
         "--limit",
         type=int,
-        default=20,
         help="Limit of the amount of videos in result",
     )
 
@@ -28,10 +29,15 @@ def parse_arguments():
 def main():
     args = parse_arguments()
     query = args.query
-    limit = args.limit
+
+    kwargs = {}
+    if args.limit:
+        kwargs["limit"] = args.limit
+    if args.language:
+        kwargs["hl"] = args.language
 
     search_session = YoutubeSearchSession()
-    result = search_session.search(query=query, limit=limit)
+    result = search_session.search(query=query, **kwargs)
     result_df = pandas.DataFrame(result)
     print(result_df)
 
