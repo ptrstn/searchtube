@@ -26,8 +26,6 @@ def extract_continuation_token(contents: dict):
 def extract_video(item: dict):
     video_id = item["videoRenderer"]["videoId"]
     title = item["videoRenderer"]["title"]["runs"][0]["text"]
-    duration = item["videoRenderer"]["lengthText"]["simpleText"]
-    view_count = item["videoRenderer"]["viewCountText"]["simpleText"]
     author = item["videoRenderer"]["ownerText"]["runs"][0]["text"]
     channel_url = item["videoRenderer"]["ownerText"]["runs"][0]["navigationEndpoint"][
         "commandMetadata"
@@ -39,6 +37,18 @@ def extract_video(item: dict):
         # Some videos do not contain a published time
         # Example query: "Jesus Christ" + "Junior NRB"
         published_time = None
+
+    try:
+        view_count = item["videoRenderer"]["viewCountText"]["simpleText"]
+    except KeyError:
+        # Scheduled videos do not have a view count yet
+        view_count = None
+
+    try:
+        duration = item["videoRenderer"]["lengthText"]["simpleText"]
+    except KeyError:
+        # Live or scheduled videos do not have a duration
+        duration = None
 
     return {
         "video_id": video_id,
